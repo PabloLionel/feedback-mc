@@ -1,5 +1,5 @@
 import { zeros, copyMatrix } from './sistemas.ecuaciones.nohomogeneas';
-import 'Math';
+// import { identity } from 'mathjs';
 /**
  * Eye
  * Devuelve una matriz Identidad si offset = 0.
@@ -27,7 +27,9 @@ const trace = (M: any[][], offset = 0) => {
     let s = 0;
     const n = M.length;
     for (let i = 0; i < n; ++i) {
-        if (0 <= i + offset && i + offset < n) { s += M[i + offset][i + offset]; }
+        if (0 <= i + offset && i + offset < n) {
+            s += M[i + offset][i + offset];
+        }
     }
     return s;
 };
@@ -99,9 +101,9 @@ export const faddeevLeverrier = (A: any[][]) => {
 };
 
 const errors = (l: number, l1: number, X: any[][], X1: any[][], n: number) => {
-    const ini = [Math.abs(l - l1)];
-    return ini.concat(X.map((x: any[], i: number) => []));
-}
+    // const ini = [Math.abs(l - l1)];
+    // return ini.concat(X.map((x: any[], i: number) => []));
+};
 export const metPotMax =
     (A: any[][]) =>
     (l = 1) =>
@@ -118,9 +120,9 @@ export const metPotMax =
             }
             const newLambda = X1[0][0] * l;
             for (let i = 0; i < n; ++i) { X1[i][0] = X1[i][0] / newLambda; }
-            if (err > Math.max(...errors(oldLambda, newLambda, X, X1, n))) {
-                yield [X1, newLambda];
-            }
+            // if (err > Math.max(...errors(oldLambda, newLambda, X, X1, n))) {
+            //     yield [X1, newLambda];
+            // }
             yield [X1, newLambda];
             oldLambda = newLambda;
             X = X1;

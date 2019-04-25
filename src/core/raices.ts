@@ -1,5 +1,4 @@
 import { Ea } from './error';
-import 'Math';
 // import 'Function';
 const conf = () => ({
     maxiter: 30,
@@ -100,7 +99,7 @@ const aitken = (x1: number) => (x2: number) => (x3: number) =>
 
 /**
  * Metodo de Iteracion
- * @param {*} x1 
+ * @param {*} x1
  */
 export const iteracion =
     (g: any) =>
@@ -114,7 +113,7 @@ export const iteracion =
             while (--CONF.maxiter) {
                 x1 = x.length % 3 ?
                 g(x[x.length - 1])
-                : aitken(x[x.length - 3])(x[x.length - 2])(x[x.length - 1])
+                : aitken(x[x.length - 3])(x[x.length - 2])(x[x.length - 1]);
                 yield x1;
                 x.push(x1);
                 if (Ea(x[x.length - 2])(x[x.length - 1]) < err) { break; }
@@ -138,7 +137,7 @@ const newtonraphson = (f: any) => (df: any) => (xn: number) =>
     xn - (f(xn) / df(xn));
 /**
  * Metodo de newton-rapson
- * @param {*} x1 
+ * @param {*} x1
  */
 export const newtonRaphson = 
     (f: any) => // funcion a hallar su raiz
@@ -166,7 +165,7 @@ export const newtonRaphson =
 
 /**
  * Modelo matematico del Segundo Ornde de Newton-Rapson
- * @param {*} x1 
+ * @param {*} x1
  */
 const segundoOrdenNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
     xn - ( f(xn)
@@ -175,7 +174,7 @@ const segundoOrdenNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
         )
     );
 export const segundoOrdenNewtonRaphson =
-    (f: any) => // funcion a hallar su raiz 
+    (f: any) => // funcion a hallar su raiz
     (df1: any) => // derivada primera de la funcion
     (df2: any) => // derivada segunda de la funcion
     (a: number) => (b: number) => // extremos de separacion
