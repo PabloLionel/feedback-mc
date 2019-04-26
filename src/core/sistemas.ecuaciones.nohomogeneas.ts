@@ -1,3 +1,5 @@
+import { clone } from 'mathjs';
+
 /**
  * Copy Matrix
  * @param M
@@ -20,9 +22,9 @@ const pivote =
  * @param A
  */
 export const eliminacionGaussiana = (A: number[][]) => {
+    const G = clone(A);
     let n = A.length;
     let m = A[0].length;
-    const G = copyMatrix(A);
     for (let k = 0; k < n - 1; ++k) { // escalonado de la matriz
         if (G[k][k] === 0) { throw new Error(`Pivote nulo en fila y columna ${k}.`); }
         for (let i = k + 1; i < n; ++i) {
@@ -46,6 +48,23 @@ export const eliminacionGaussiana = (A: number[][]) => {
     }
     return x;
 };
+
+// const log = console.log;
+// log(eliminacionGaussiana(
+//     [
+//         [2, 6, 1, 7],
+//         [1, 2, -1, -1],
+//         [5, 7, -4, 9],
+//     ],
+// )); // [ 10, -3, 5 ]
+// log(eliminacionGaussiana(
+//     [
+//         [2, 3, 0, 8],
+//         [4, 5, 1, 15],
+//         [2, 0, 4, 1],
+//     ],
+// )); // [ 8.5, -3, -4 ]
+
 /**
  * Zeros
  * Generador de Arreglo o matriz de ceros.
@@ -84,7 +103,7 @@ export const gaussJordan = (A: any[][]) => {
 };
 
 /**
- * Gauss Jordan
+ * Gauss Seidel
  * @param A
  */
 export const gaussSeidel =
@@ -137,6 +156,16 @@ export const gaussSeidel =
         }
         return solini;
     };
+
+// log(gaussSeidel(20)(.001)()(
+//     [
+//         [12, 6, 1, 7],
+//         [1, 2, -1, -1],
+//         [5, 7, 15, 9],
+//     ],
+// ));
+// exacto: [ 0.8411214953271029, -0.6168224299065421, 0.6074766355140188 ];
+// aprox.: [ 0.8345318930041152, -0.6068441358024692, 0.6077438271604938 ]
 
 /**
  * Factorizacion LU
