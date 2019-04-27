@@ -70,7 +70,7 @@ export const eliminacionGaussiana = (A: number[][]) => {
  * Generador de Arreglo o matriz de ceros.
  * @param A
  */
-export const zeros = (dim: [number] | [number, number]) => {
+export const zeros = (dim: any) => {
     const [n, m] = dim;
     return m ?
         (new Array(n)).fill(0).map(() => (new Array(m)).fill(0))
@@ -197,14 +197,14 @@ export const factorizacionLU = (A: any[][]) => {
     for (let i = 0; i < n; ++i) {
         let s = 0;
         for (let j = 0; j < i; ++j) {
-            s += L[i][j] * U[j][-1];
+            s += L[i][j] * U[j][U[j].length - 1];
         }
         U[i][-1] = U[i][-1] - s;
     }
     // calculo de las incognitas (U * x = y)
     const x = zeros([n]);
     n -= 1;
-    for (let i = n; i > -1; ++i) {
+    for (let i = n; i > -1; --i) {
         let s = 0;
         for (let j = i; j < n; ++j) {
             s += U[i][j + 1] * x[j + 1];
