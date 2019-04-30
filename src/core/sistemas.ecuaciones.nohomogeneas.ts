@@ -197,14 +197,14 @@ export const factorizacionLU = (A: any[][]) => {
     for (let i = 0; i < n; ++i) {
         let s = 0;
         for (let j = 0; j < i; ++j) {
-            s += L[i][j] * U[j][-1];
+            s += L[i][j] * U[j][U[j].length - 1];
         }
-        U[i][-1] = U[i][-1] - s;
+        U[i][U[i].length - 1] = U[i][U[i].length - 1] - s;
     }
     // calculo de las incognitas (U * x = y)
     const x = zeros([n]);
-    n -= 1;
-    for (let i = n; i > -1; ++i) {
+    n--;
+    for (let i = n; i > -1; --i) {
         let s = 0;
         for (let j = i; j < n; ++j) {
             s += U[i][j + 1] * x[j + 1];
