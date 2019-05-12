@@ -17,7 +17,6 @@ export const bolzano = (f: any) => (a: number) => (b: number) =>
     f(a) * f(b) < 0;
 
 // [[[[[[[[[[[[[[[[[ECUACIONES LINEALES SIMULTANEAS]]]]]]]]]]]]]]]]]
-
 /**
  * Copy Matrix
  * @param M
@@ -85,7 +84,7 @@ export const multiply = (A: number[][], B: number[][]) => {
     let j;
     let k;
     for ( i = 0; i < n; ++i ) {
-        C.push([].slice())
+        C.push([].slice());
         for ( j = 0; j < m; ++j ) {
             C[i].push(0);
             for ( k = 0; k < n; ++k ) {
@@ -101,7 +100,7 @@ export const multiply = (A: number[][], B: number[][]) => {
  * @param M : number[][]
  * @param k : number
  */
-export const scalar = (M: number[][], k: number) =>{
+export const scalar = (M: number[][], k: number) => {
     let i;
     let j;
     const [n, m] = size(M) as number[];
@@ -112,3 +111,79 @@ export const scalar = (M: number[][], k: number) =>{
     }
     return M;
 };
+// [[[[[[[[[[[[[[[[[INTERPOLACIÓN Y AJUSTE]]]]]]]]]]]]]]]]]
+/**
+ * Es Equidistante
+ *  Para todo h(i) = abs(x(i + 1) - x(i)), con i = 0, 1, 2, ...
+ *  Determina que todos las distancian entre X(i) y X(i + 1) sean iguales.
+ * @param X Vector de números de absisa.
+ * @returns Verdadero o Falso.
+ */
+export const isEquidistant = (X: number[]) => {
+    const h = Math.abs(X[1] - X[0]);
+    for (let i = 2; i < X.length; ++i) {
+        if (h !== Math.abs(X[i - 1] - X[i])) { return false; }
+    }
+    return true;
+};
+/**
+ * Son Pares ordenados
+ *  Comprueba que un conjunto esta formado por solo pares ordenados.
+ */
+export const areOrderedPairs = (v: any) =>
+    v.every(([x, y]: any) => typeof x === typeof y);
+
+// [[[[[[[[[[[[[[[[[INTEGRACION DE ECUACIONES DIFERENCIALES]]]]]]]]]]]]]]]]]
+export type fnDiferencial = (x: number, y: number) => number;
+
+// [[[[[[[[[[[[[[[[[GENERAL]]]]]]]]]]]]]]]]]
+export function* range(...args: number[]) {
+    let start: number;
+    let end: number;
+    let increment: number;
+    switch (args.length) {
+        case 0:
+            throw new Error('range expected 1 arguments, got 0');
+        case 1:
+            start = 0;
+            end = args[0];
+            increment = 1;
+            break;
+        case 2:
+            start = args[0];
+            end = args[1];
+            increment = 1;
+            break;
+        case 3:
+            start = args[0];
+            end = args[1];
+            increment = args[2];
+            break;
+    }
+    // @ts-ignore
+    while (start < end) {
+        // @ts-ignore
+        yield start;
+        // @ts-ignore
+        start += increment;
+    }
+}
+
+export function resolvent(a: number, b: number, c: number) {
+    if (a === 0) { throw new Error('The main coefficient can not be zero.'); }
+    const aux0 = 2 * a;
+    const  det = b ** 2 - 4 * a * c; // determinante
+    const aux1 = -b / aux0;
+    const aux2 = Math.sqrt(det) / aux0;
+    return [aux1 + aux2, aux1 - aux2];
+}
+/**
+ * Productoria
+ * @param v arreglo de números.
+ * @returns producto de todos los valores del vector.
+ */
+export const production = (v: number[]) =>
+    v.reduce((x: number, y: number) => x * y);
+
+export const isPar = (n: number) => !!(n % 2);
+export const isImpar = (n: number) => !isPar(n);
