@@ -5,7 +5,7 @@ import { bolzano } from './utils';
  * Metodo de tanteos
  * @param {*} x1
  */
-export const tanteos =
+export const scores =
     (f: any) =>
     (A: number) =>
     (B: number) =>
@@ -31,13 +31,13 @@ const tol = (er: number) => (a: number) => (b: number) =>
  * Intervalo Medio
  * @param {*} x1
  */
-const medio = (a: number) => (b: number) =>
+const medium = (a: number) => (b: number) =>
     (a + b) / 2;
 /**
  * Metodo de Intervalo Medio
  * @param {*} x1
  */
-export const intervaloMedio =
+export const mediumInterval =
     (fn: any) =>
     (a: number) =>
     (b: number) =>
@@ -46,7 +46,7 @@ export const intervaloMedio =
         const bl = bolzano(fn);
         let p;
         do {
-            p = medio(a)(b);
+            p = medium(a)(b);
             yield p;
             if (bl(a)(p)) {
                 b = p;
@@ -60,18 +60,18 @@ export const intervaloMedio =
  * Formula de Interpolacion Lineal
  * @param {*} x1
  */
-const interpolacion = (x1: number) => (y1: number) => (x2: number) => (y2: number) =>
+const interpolation = (x1: number) => (y1: number) => (x2: number) => (y2: number) =>
     (x1 * y2 - x2 * y1) / (y2 - y1);
 /**
  * Metodo de Interpolación Lineal
  * @param {*} x1
  */
-export const interpolacionLineal =
+export const linearInterpolation =
     (f: any) =>
     (x1: number) =>
     (x2: number) =>
     function*(err = epsilon()) {
-        const il = interpolacion(x1)(f(x1));
+        const il = interpolation(x1)(f(x1));
         let x;
         do {
             x = x2;

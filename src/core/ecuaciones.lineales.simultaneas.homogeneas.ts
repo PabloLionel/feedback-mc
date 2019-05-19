@@ -27,7 +27,10 @@ export function* faddeevLeverrier(A: number[][]) {
         yield AK;
     }
     const prod = Math.pow(-1, n);
-    yield P.map((b: number) => b * prod);
+    const lambdaRoots = P.map((b: number) => b * prod);
+
+    yield lambdaRoots.slice();
+
 
 }
 

@@ -18,8 +18,11 @@ export const trapecios = (points: number[][]) => {
     let P = 0;
     let I = 0;
     for (let i = 1; i < n - 1; ++i) {
-        if (i % 2) { P += Y[i]; }
-        if (!(i % 2)) { I += Y[i]; }
+        if (isPar(i)) {
+            P += Y[i];
+        } else {
+            I += Y[i];
+        }
     }
     return {
         h,
@@ -48,8 +51,11 @@ export const simpson = (points: number[][]) => {
     let P = 0;
     let I = 0;
     for (let i = 1; i < n - 1; ++i) {
-        if (i % 2) { P += Y[i]; }
-        if (!(i % 2)) { I += Y[i]; }
+        if (isPar(i)) {
+            P += Y[i];
+        } else {
+            I += Y[i];
+        }
     }
     return {
         h,
@@ -84,7 +90,7 @@ export const threeEighthsSimpson = (points: number[][]) => (fnIntegral?: typeFnI
         integ += (3 * h / 8) * (Y[i] + 3 * Y[i + 1] + 3 * Y[i + 2] + Y[i + 3]);
     }
     if (fnIntegral && (i - 3) !== n) {
-        const { integral } = fnIntegral(points.slice(i - 3))
+        const { integral } = fnIntegral(points.slice(i - 3));
         integ += integral;
     }
     return {

@@ -13,7 +13,7 @@ const aitken = (x1: number) => (x2: number) => (x3: number) =>
  * Metodo de Iteracion
  * @param {*} x1
  */
-export const iteracion =
+export const iteration =
     (g: any) =>
     (x0: number) =>
     (ak = false) =>
@@ -46,13 +46,22 @@ export const iteracion =
  * Modelo matematico del Segundo Ornde de Newton-Rapson
  * @param {*} x1
  */
-const segundoOrdenNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
+const secondOrderOfNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
     xn - ( f(xn)
         / (df1(xn) - (f(xn) * df2(xn))
         / (2 * df1(xn))
         )
     );
-export const segundoOrdenNewtonRaphson =
+/**
+ * Método de Segundo Orden de Newton Raphson
+ * @param f : funcion a resolver.
+ * @param df1: derivada 1ra de la funcion.
+ * @param df2: derivada 2da de la funcion.
+ * @param a : extremo de separación inferior.
+ * @param b : extremo de separación superior.
+ * @param e : cota de error.
+ */
+export const secondOrderOfNewtonRaphson =
     (f: any) => // funcion a hallar su raiz
     (df1: any) => // derivada primera de la funcion
     (df2: any) => // derivada segunda de la funcion
@@ -72,7 +81,7 @@ export const segundoOrdenNewtonRaphson =
             throw Error('El procedimiento es divergente en ambos extremos de separacion.');
         }
 
-        const sonr = segundoOrdenNR(f)(df1)(df2);
+        const sonr = secondOrderOfNR(f)(df1)(df2);
         do {
             a = x0; // reutilizacion de la variable a como variable auxiliar
             x0 = sonr(x0);

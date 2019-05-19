@@ -100,7 +100,7 @@ export const tabular = (points: number[][]) => {
         : advancedDifferences(notEquidistant(X))(Y);
 };
 
-export interface InputInterpoInversa {
+export interface InputInterpoReverse {
     y: number;
     h: number;
     pointInit: [number, number]; // p(0) = (x0, y0)
@@ -109,20 +109,20 @@ export interface InputInterpoInversa {
 /**
  * Método de Interpolación Inversa Lineal
  * y = P(x) => x = x0 + ((y - y0) * h) / Δy0, con x desconocido.
- * object = {
+ * Object<{
  *      @param y : valor de la funcion aplicado al punto desconocido x de y = P(x).
  *      @param h : x-distancia de los puntos.
  *      @param pointInit : punto inicial que contiene
  *              el mayor valor de absisa x menor al valor
  *              a interpolar, p(init) = (x0, y0).
  *      @param inc : primer incremento de y0, tabulado de los valores de la imagen.
- * }
+ * }>
  */
-export const interpoInversaLineal = ({ y, h, pointInit, inc }: InputInterpoInversa) =>
+export const linearReverseInterpolation = ({ y, h, pointInit, inc }: InputInterpoReverse) =>
     pointInit[0] + (y + pointInit[1]) * h / inc;
 
 
-export interface InputInterpoCuadratica {
+export interface InputInterpoQuadratic {
     y: number;
     y0: number;
     h: number;
@@ -139,7 +139,7 @@ export interface InputInterpoCuadratica {
  *      c = y0 + (a * x1 - (Δy0 / h)) * x0 - y
  * [r1, r2] = resolvente_cuadratica(a, b, c)
  * Donde: x = r1 si r1 ∈ (x0; x1) o x = r2 si r2 ∈ (x0; x1)
- * object = {
+ * Dbject<{
  *      @param y : valor de la funcion aplicado al punto desconocido x de y = P(x).
  *      @param h : x-distancia de los puntos.
  *      @param pointInit : punto inicial que contiene
@@ -148,9 +148,9 @@ export interface InputInterpoCuadratica {
  *      @param x1 : siguiente punto respecto x0 del punto inicial.
  *      @param inc1 : primer incremento de y0, tabulado de los valores de la imagen.
  *      @param inc2 : segundo incremento de y0, tabulado de los valores de la imagen.
- * }
+ * }>
  */
-export const interpoInversaCuadratica = ({ y, h, pointInit, x1, inc1, inc2 }: InputInterpoCuadratica) => {
+export const quadraticInverseInterpolation = ({ y, h, pointInit, x1, inc1, inc2 }: InputInterpoQuadratic) => {
     const [x0, y0] = pointInit;
     const a = inc2 / 2 * h ** 2;
     const aux = inc1 / h;
@@ -174,11 +174,12 @@ export interface InputMu {
 /**
  * Mu
  * μ = (x - x0) / h
- * object = {
+ * Object<{
  *      @param points vector de puntos.
  *      @param x número a interpolar.
  *      @param asc boolean que indica que la tabla es ascendente.
- * }
+ * }>
+ * @returns Object<{ index: number, u: number }>.
  */
 const mu = ({ points, x, asc }: InputMu): { index: number, u: number } => {
     const n = points.length;
@@ -207,7 +208,7 @@ const mu = ({ points, x, asc }: InputMu): { index: number, u: number } => {
  * @param tab
  * @param x
  */
-export const newtonGregoryAscendente =
+export const newtonGregoryAscending =
     (points: number[][]) =>
         (tab: number[][]) =>
             (x: number) => {
@@ -238,7 +239,7 @@ export const newtonGregoryAscendente =
  * @param tab
  * @param x
  */
-export const newtonGregoryDescendente =
+export const newtonGregoryDescending =
     (points: number[][]) =>
         (tab: number[][]) =>
             (x: number) => {
@@ -290,7 +291,7 @@ export const lagrange =
             return s * production(subPoints);
         };
 
-export const interpoParabolicaProgresiva =
+export const progressiveParabolicInterpolation =
     (points: number[][]) =>
         (tab: number[][]) =>
             function*(x: number) {

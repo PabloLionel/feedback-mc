@@ -21,7 +21,7 @@ const pivote =
  * Eliminacion Gaussiana
  * @param A
  */
-export const eliminacionGaussiana = (A: number[][]) => {
+export const gaussianElimination = (A: number[][]) => {
     const G = clone(A);
     let n = A.length;
     let m = A[0].length;
@@ -169,9 +169,9 @@ export const gaussSeidel =
 
 /**
  * Factorizacion LU
- * @param
+ * @param A : Matriz aplicada.
  */
-export const factorizacionLU = (A: any[][]) => {
+export const LUfactorization = (A: any[][]) => {
     let n = A.length; // al ser una cuadrada sin sus term. indep., obtenemos el numero de incognitas.
     const U = copyMatrix(A);
     const L = zeros([n, n]);
