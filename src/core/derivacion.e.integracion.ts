@@ -1,9 +1,35 @@
 import { areOrderedPairs, isEquidistant, isPar } from './utils';
+type T = [number, number];
 /**
- * Formula de los Trapecios
- * @param points Vector de pares ordenados (puntos).
+ * @function trapecios - Formula de los Trapecios
+ * t = h * (E / 2 + P + I)
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]} points : Vector de pares ordenados (puntos).
+ *
+ * @returns Object<{
+ *      h: number,
+ *      E: number,
+ *      P: number,
+ *      I: number,
+ *      integral: number,
+ *  }>
+ *
+ * @example
+ * const ps = [
+ *  [0,.7071],
+ *  [1.5,.6325],
+ *  [2,.5774],
+ *  [2.5,.5345],
+ *  [3,.5],
+ *  [4,.481],
+ *  [5,0.456],
+ *  [6,.434],
+ * ]
+ * console.log(trapecios(ps))
  */
-export const trapecios = (points: number[][]) => {
+export const trapecios = (points: T[]) => {
     if (!(Array.isArray(points) && areOrderedPairs(points))) {
         throw new Error('An array of ordered pairs was expected.');
     }
@@ -32,8 +58,37 @@ export const trapecios = (points: number[][]) => {
         integral: h * (E / 2 + P + I),
     };
 };
-
-export const simpson = (points: number[][]) => {
+/**
+ * @function simpson - Regla 3/4 de Simpson
+ *  Para un numero par de puntos, o vale tambien decir, un número
+ * impar de frnajas (sub-divisiones).
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]} points : Vector de pares ordenados (puntos).
+ *
+ * @returns Object<{
+ *      h: number,
+ *      E: number,
+ *      P: number,
+ *      I: number,
+ *      integral: number
+ * }>
+ *
+ * @example
+ * const ps = [
+ *  [0,.7071],
+ *  [1.5,.6325],
+ *  [2,.5774],
+ *  [2.5,.5345],
+ *  [3,.5],
+ *  [4,.481],
+ *  [5,0.456],
+ *  [6,.434],
+ * ]
+ * console.log(simpson(ps))
+ */
+export const simpson = (points: T[]) => {
     if (!(Array.isArray(points) && areOrderedPairs(points))) {
         throw new Error('An array of ordered pairs was expected.');
     }
@@ -66,23 +121,50 @@ export const simpson = (points: number[][]) => {
     };
 };
 
-type typeFnIntegral = (points: number[][]) => { integral: number };
+type typeFnIntegral = (points: T[]) => { integral: number };
 /**
- * Regla de Tres Octavos de Simson
+ * @function threeEighthsSimpson - Regla de 3/8 de Simson
+ * [curryficada]
  * I = (3 * h / 8) * (Y(0) + 3 * Y(1) + 3 * Y(2) + Y(3))
  *  Para un numero par de puntos, o vale tambien decir, un número
  * impar de frnajas (sub-divisiones).
+ *
+ * @typedef {[number, number]} T
+ * @typedef {(points: T[]) => { integral: number }} typeFnIntegral
+ *
+ * @param {T[]} points : Vector de pares ordenados (puntos).
+ * @param {T[]} fnIntegral : Vector de pares ordenados (puntos).
+ *
+ * @returns Object<{
+ *      h: number,
+ *      integral: number,
+ *  }>
+ *
+ * @example
+ * const ps = [
+ *  [0,.7071],
+ *  [1.5,.6325],
+ *  [2,.5774],
+ *  [2.5,.5345],
+ *  [3,.5],
+ *  [4,.481],
+ *  [5,0.456],
+ *  [6,.434],
+ * ]
+ * console.log(threeEighthsSimpson(ps))
  */
-export const threeEighthsSimpson = (points: number[][]) => (fnIntegral?: typeFnIntegral) => {
+export const threeEighthsSimpson =
+    (points: T[]) =>
+    (fnIntegral?: typeFnIntegral) => {
     if (!(Array.isArray(points) && areOrderedPairs(points))) {
         throw new Error('An array of ordered pairs was expected.');
     }
-    const X = points.map(([x, y]: number[]) => x);
+    const X = points.map(([x, y]: T) => x);
     if (!isEquidistant(X)) {
         throw new Error('This method is only for x-distant points.');
     }
     const h = Math.abs(points[0][0] - points[1][0]);
-    const Y = points.map(([x, y]: number[]) => y);
+    const Y = points.map(([x, y]: T) => y);
     const n = Y.length;
     let integ = 0;
     let i;
@@ -98,17 +180,3 @@ export const threeEighthsSimpson = (points: number[][]) => (fnIntegral?: typeFnI
         integral: integ,
     };
 };
-
-// const ps = [
-//     [0,.7071],
-//     [1.5,.6325],
-//     [2,.5774],
-//     [2.5,.5345],
-//     [3,.5],
-//     [4,.481],
-//     [5,0.456],
-//     [6,.434],
-// ]
-// console.log(tresOctavosSimpson(ps)())
-// console.log()
-// console.log(tresOctavosSimpson(ps)(trapecios))

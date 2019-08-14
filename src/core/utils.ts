@@ -1,60 +1,81 @@
 import {
-    // matrix,
-    // multiply,
-    // ones,
     size,
-    // inv,
-    // identity,
-    // trace,
-    // add,
 } from 'mathjs';
+
+export type T = [number, number];
+
 // [[[[[[[[[[[[[[[[[RAICES DE ECUACIONES]]]]]]]]]]]]]]]]]
 /**
- * Interpretación geometrica del teorema de Bolzano
- * @param {*} x1
+ * @function bolzano - Interpretación geometrica del teorema de Bolzano
+ * [curryficado]
+ *
+ * @param {Function} f  Función a analizar.
+ * @param {Function} f  Función a analizar.
+ * @param {Function} f  Función a analizar.
+ *
+ * @returns Boolean
  */
-export const bolzano = (f: any) => (a: number) => (b: number) =>
-    f(a) * f(b) < 0;
+export const bolzano =
+    (f: any) =>
+        (a: number) =>
+            (b: number) =>
+                f(a) * f(b) <= 0;
 
 // [[[[[[[[[[[[[[[[[ECUACIONES LINEALES SIMULTANEAS]]]]]]]]]]]]]]]]]
 /**
- * Copy Matrix
+ * @function copyMatrix - Copy Matrix
  * @param M
  */
-export const copyMatrix = (M: any[][]) => M.map((a) => a.slice());
+export const copyMatrix = (M: any[][]) =>
+    M.map((a) => a.slice());
 
 /**
- * Pivote
- * @param
+ * @function pivote - Pivote
+ * [curryficado]
+ *  pv = a22 - a12 * a21 / a11.
+ *
+ * @param {number} a11
+ * @param {number} a21
+ * @param {number} a12
+ * @param {number} a12
+ *
+ * @returns number
  */
 export const pivote =
     (a11: number) =>
-    (a21: number) =>
-    (a12: number) =>
-    (a22: number) =>
-        a11 === 0 ?
-        null
-        : a22 - a12 * a21 / a11;
+        (a21: number) =>
+            (a12: number) =>
+                (a22: number) =>
+                    a11 === 0 ?
+                    null
+                    : a22 - a12 * a21 / a11;
 
 /**
- * Zeros
- * Generador de Arreglo o matriz de ceros.
- * @param A
+ * @function zeros Zeros
+ *  Generador de Arreglo o matriz de ceros.
+ *
+ * @param {[number, number?]}   dim Dimensiones a respetar.
+ *
+ * @returns number[] | number[][]
  */
-export const zeros = (dim: any) => {
+export const zeros = (dim: [number, number?]) => {
     const [n, m] = dim;
+    if (!n) { return []; }
     return m ?
         (new Array(n)).fill(0).map(() => (new Array(m)).fill(0))
         : (new Array(n)).fill(0);
 };
 
 /**
- * Eye
+ * @function eye - Eye
  * Devuelve una matriz Identidad si offset = 0.
  * Si offset = k, desplaza k posiciones los 1 de
  * la diagonal.
- * @param n dimension de la matriz identidad.
- * @param offset desplaza la posicion de los 1 de la diagonal.
+ *
+ * @param {number} n        Dimension de la matriz identidad.
+ * @param {number} offset   Desplaza la posicion de los 1 de la diagonal.
+ *
+ * @returns number[][]
  */
 export const eye = (n: number, offset = 0) => {
     const I = zeros([n, n]);
@@ -67,16 +88,19 @@ export const eye = (n: number, offset = 0) => {
 };
 
 /**
- * Multiply
- * Retorna el producto de dos matrices.
- * @param A : number[][]
- * @param B : number[][]
+ * @function multiply - Multiply
+ *  Retorna el producto de dos matrices.
+ *
+ * @param {number[][]} A
+ * @param {number[][]} B
+ *
+ * @returns number[][]
  */
 export const multiply = (A: number[][], B: number[][]) => {
     if (!A && !B
         || !B[0]
         || A[0].length !== B.length
-    ) { return null; }
+    ) { return [[]]; }
     const n = A.length;
     const m = B[0].length;
     const C: any[] = [];
@@ -96,9 +120,12 @@ export const multiply = (A: number[][], B: number[][]) => {
 };
 
 /**
- * Scalar
- * @param M : number[][]
- * @param k : number
+ * @function scalar - Scalar
+ *
+ * @param {number[][]}  M
+ * @param {number}      k
+ *
+ * @returns number[]
  */
 export const scalar = (M: number[][], k: number) => {
     let i;
@@ -113,11 +140,12 @@ export const scalar = (M: number[][], k: number) => {
 };
 // [[[[[[[[[[[[[[[[[INTERPOLACIÓN Y AJUSTE]]]]]]]]]]]]]]]]]
 /**
- * Es Equidistante
+ * @function isEquidistant - Es Equidistante
  *  Para todo h(i) = abs(x(i + 1) - x(i)), con i = 0, 1, 2, ...
  *  Determina que todos las distancian entre X(i) y X(i + 1) sean iguales.
- * @param X Vector de números de absisa.
- * @returns Verdadero o Falso.
+ * @param X     Vector de números de absisa.
+ *
+ * @returns Boolean
  */
 export const isEquidistant = (X: number[]) => {
     const h = Math.abs(X[1] - X[0]);
@@ -127,16 +155,31 @@ export const isEquidistant = (X: number[]) => {
     return true;
 };
 /**
- * Son Pares ordenados
+ * @function areOrderedPairs - Son Pares ordenados
  *  Comprueba que un conjunto esta formado por solo pares ordenados.
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]} v
  */
-export const areOrderedPairs = (v: any) =>
-    v.every(([x, y]: any) => typeof x === typeof y);
+export const areOrderedPairs = (v: T[]) =>
+    v.every(([x, y]: T) => typeof x === typeof y);
 
 // [[[[[[[[[[[[[[[[[INTEGRACION DE ECUACIONES DIFERENCIALES]]]]]]]]]]]]]]]]]
-export type fnDiferencial = (x: number, y: number) => number;
+export type fnDifferential = (x: number, y: number) => number;
 
 // [[[[[[[[[[[[[[[[[GENERAL]]]]]]]]]]]]]]]]]
+
+/**
+ * @function range
+ *  Inspirado en el metodo range() de Python.
+ *
+ * @see https://docs.python.org/3/library/stdtypes.html#typesseq-range
+ *
+ * @param {number[]} args
+ *
+ * @returns Iterator<number>
+ */
 export function* range(...args: number[]) {
     let start: number;
     let end: number;
@@ -145,20 +188,16 @@ export function* range(...args: number[]) {
         case 0:
             throw new Error('range expected 1 arguments, got 0');
         case 1:
-            start = 0;
-            end = args[0];
-            increment = 1;
+            [start, end, increment] = [0, args[0], 1];
             break;
         case 2:
-            start = args[0];
-            end = args[1];
-            increment = 1;
+            [start, end, increment] = [...args, 1];
             break;
         case 3:
-            start = args[0];
-            end = args[1];
-            increment = args[2];
+            [start, end, increment] = args;
             break;
+        default:
+            throw new Error('range expected at most 3 arguments, got 4.');
     }
     // @ts-ignore
     while (start < end) {
@@ -168,7 +207,15 @@ export function* range(...args: number[]) {
         start += increment;
     }
 }
-
+/**
+ * @function resolvent - Resolvente cuadratica
+ *
+ * @param {number} a
+ * @param {number} b
+ * @param {number} c
+ *
+ * @returns [number, number]
+ */
 export function resolvent(a: number, b: number, c: number) {
     if (a === 0) { throw new Error('The main coefficient can not be zero.'); }
     const aux0 = 2 * a;
@@ -178,12 +225,28 @@ export function resolvent(a: number, b: number, c: number) {
     return [aux1 + aux2, aux1 - aux2];
 }
 /**
- * Productoria
- * @param v arreglo de números.
- * @returns producto de todos los valores del vector.
+ * @function production - Productoria
+ *  Calcula el producto de todos los valores del vector.
+ *
+ * @param {number[]} v arreglo de números.
+ *
+ * @returns number
  */
 export const production = (v: number[]) =>
     v.reduce((x: number, y: number) => x * y);
-
+/**
+ * @function isPar
+ *
+ * @param {number} n
+ *
+ * @returns Boolean
+ */
 export const isPar = (n: number) => !!(n % 2);
+/**
+ * @function isImpar
+ *
+ * @param {number} n
+ *
+ * @returns Boolean
+ */
 export const isImpar = (n: number) => !isPar(n);

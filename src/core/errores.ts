@@ -1,8 +1,8 @@
 /**
- * Épsilon de la computadora
- * Esta función devuelve el valor de épsilon
- * de la computadora.
- * @return EPSILON: number
+ * @function epsilon - Épsilon de la computadora
+ *  Esta función devuelve el valor de épsilon de la computadora.
+ *
+ * @returns number
  */
 export const epsilon =
     () => {
@@ -22,9 +22,15 @@ export const epsilon =
     };
 
 /**
- * Error Absoluto
- * @param aproximado: number
- * @param exacto: number
+ * @function Ea - Error Absoluto
+ * [curryficada]
+ *
+ * @param {number} aproximado
+ * @param {number} exacto
+ *
+ * @returns numbre
+ *
+ * @example --
  */
 export const Ea = (aproximado: number) => (exacto: number) => {
     if (typeof aproximado === 'number' && typeof exacto === 'number') {
@@ -34,9 +40,15 @@ export const Ea = (aproximado: number) => (exacto: number) => {
     }
 };
 /**
- * Error Relativo
- * @param aproximado: number
- * @param exacto: number
+ * @function Er - Error Relativo
+ * [curryficada]
+ *
+ * @param {number} aproximado
+ * @param {number} exacto
+ *
+ * @returns number
+ *
+ * @example --
  */
 export const Er = (aproximado: number) => (exacto: number) => {
     if (typeof aproximado === 'number' && typeof exacto === 'number') {
@@ -46,9 +58,15 @@ export const Er = (aproximado: number) => (exacto: number) => {
     }
 };
 /**
- * Error Relativo Porcentual
- * @param aproximado: number
- * @param exacto: number
+ * @function Ep - Error Relativo Porcentual
+ * [curryficada]
+ *
+ * @param {number} aproximado
+ * @param {number} exacto
+ *
+ * @returns Boolean
+ *
+ * @example --
  */
 export const Ep = (aproximado: number) => (exacto: number) => {
     if (typeof aproximado === 'number' && typeof exacto === 'number') {
@@ -59,25 +77,31 @@ export const Ep = (aproximado: number) => (exacto: number) => {
 };
 
 /**
- * Diferencia Absoluta Individual
- *  Comprueba que | X(j)[i] - X(j)[i-1] | <= epsilon(j)
- * sea valido para las "n" expresiones involucradas.
- *  @param aproximados: number[]
- *  @param exactos: number[]
- *  @param epsilons: number[]
+ * @function difAi - Diferencia Absoluta Individual
+ * [curryficada]
+ *  Comprueba que | X(j)[i] - X(j)[i-1] | <= epsilon(j) sea valido para las "n"
+ * expresiones involucradas.
+ *
+ * @param {number[]} aproximados
+ * @param {number[]} exactos
+ * @param {number[]} epsilons
+ *
+ * @returns Boolean
+ *
+ * @example --
  */
 export const difAi =
     (aproximados: number[]) =>
     (exactos: number[]) =>
     (epsilons: number[]): boolean => {
         if (!Array.isArray(aproximados)) {
-            throw new Error('Se esperaba un arreglo de aproximaciones.');
+            throw new Error('An arrangement of approximations was expected.');
         }
         if (!Array.isArray(exactos)) {
-            throw new Error('Se esperaba un arreglo de valores exactos.');
+            throw new Error('Expected an array of exact values.');
         }
         if (!Array.isArray(epsilons)) {
-            throw new Error('Se esperaba un arreglo de valores epsilon a comparar.');
+            throw new Error('An array of epsilon values was expected to be compared.');
         }
         const n = Math.min(
             aproximados.length,
@@ -93,25 +117,30 @@ export const difAi =
     };
 
 /**
- * Diferencia Relativa Individual
- *  Comprueba que | X(j)[i] - X(j)[i-1] / X(j) | <= epsilon(j)
- * sea valido para las "n" expresiones involucradas.
- *  @param aproximados: number[]
- *  @param exactos: number[]
- *  @param epsilons: number[]
+ * @function difRi - Diferencia Relativa Individual
+ * [curryficada]
+ *  Comprueba que | X(j)[i] - X(j)[i-1] / X(j) | <= epsilon(j) sea valido para las "n" expresiones involucradas.
+ *
+ * @param {number[]} aproximados
+ * @param {number[]} exactos
+ * @param {number[]} epsilons
+ *
+ * @returns Boolean
+ *
+ * @example --
  */
 export const difRi =
     (aproximados: number[]) =>
     (exactos: number[]) =>
     (epsilons: number[]): boolean => {
         if (!Array.isArray(aproximados)) {
-            throw new Error('Se esperaba un arreglo de aproximaciones.');
+            throw new Error('An arrangement of approximations was expected.');
         }
         if (!Array.isArray(exactos)) {
-            throw new Error('Se esperaba un arreglo de valores exactos.');
+            throw new Error('Expected an array of exact values.');
         }
         if (!Array.isArray(epsilons)) {
-            throw new Error('Se esperaba un arreglo de valores epsilon a comparar.');
+            throw new Error('An array of epsilon values was expected to be compared.');
         }
         const n = Math.min(
             aproximados.length,
@@ -126,21 +155,26 @@ export const difRi =
         return true;
     };
 /**
- * Diferencia Absoluta Global
- *  Producto de "1/n" por la Sumatoria de | X(j)[i] - X(j)[i-1] | <= epsilon.
- *  @param aproximados: number[]
- *  @param exactos: number[]
- *  @param epsilon: number
+ * @function difAg - Diferencia Absoluta Global
+ * [curryficada]
+ * Producto de "1/n" por la Sumatoria de | X(j)[i] - X(j)[i-1] | <= epsilon.
+ * @param {number[]} aproximados
+ * @param {number[]} exactos
+ * @param {number} epsilon
+ *
+ * @returns Boolean
+ *
+ * @example --
  */
 export const difAg =
     (aproximados: number[]) =>
     (exactos: number[]) =>
     (epsi: number): boolean => {
         if (!Array.isArray(aproximados)) {
-            throw new Error('Se esperaba un arreglo de aproximaciones.');
+            throw new Error('An arrangement of approximations was expected.');
         }
         if (!Array.isArray(exactos)) {
-            throw new Error('Se esperaba un arreglo de valores exactos.');
+            throw new Error('Expected an array of exact values.');
         }
         const n = Math.min(
             aproximados.length,
@@ -153,21 +187,26 @@ export const difAg =
         return E / n <= epsi;
     };
 /**
- * Diferencia Relativa Global
- *  Producto de "1/n" por la Sumatoria de | X(j)[i] - X(j)[i-1] | <= epsilon.
- *  @param aproximados: number[]
- *  @param exactos: number[]
- *  @param epsilon: number
+ * @function difRg - Diferencia Relativa Global
+ * [curryficada]
+ * Producto de "1/n" por la Sumatoria de | X(j)[i] - X(j)[i-1] | <= epsilon.
+ * @param {number[]} aproximados
+ * @param {number[]} exactos
+ * @param {number} epsilon
+ *
+ * @returns Boolean
+ *
+ * @example --
  */
 export const difRg =
     (aproximados: number[]) =>
     (exactos: number[]) =>
     (epsi: number): boolean => {
         if (!Array.isArray(aproximados)) {
-            throw new Error('Se esperaba un arreglo de aproximaciones.');
+            throw new Error('An arrangement of approximations was expected.');
         }
         if (!Array.isArray(exactos)) {
-            throw new Error('Se esperaba un arreglo de valores exactos.');
+            throw new Error('Expected an array of exact values.');
         }
         const n = Math.min(
             aproximados.length,

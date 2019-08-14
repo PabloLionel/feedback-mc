@@ -1,26 +1,35 @@
-import { isEquidistant, range, resolvent, production } from './utils';
+import {
+    isEquidistant,
+    range,
+    resolvent,
+    production,
+    T,
+} from './utils';
 /**
- * Equidistante
- * fn = Y => Y'
- * Y' = [y'0, y'1, y'2, ...]
- * @param Y Vector de números.
+ * @function equidistant - Equidistante
+ *  Y' = [y'0, y'1, y'2, ...]
+ *
+ * @param {number[]} Y  Vector de números.
+ *
+ * @returns number[]
  */
 const equidistant = (Y: number[]) =>
     [...range(Y.length - 1)]
         .map((i: number) => Y[i + 1] - Y[i]);
 
 /**
- * No Equidistante
+ * @function notEquidistant - No Equidistante
+ * [Curryficada]
  *  y'(i) = (y(i + 1) - y(i)) / (x(i + jump) - x(i))
  *  Función Curryficada para recibir el vector de distancias X
  * para un vector de imagen Y.
  *  Retorna un vector de diferencias avanzadas divididas respecto
  * a Y.
- * [Curry] fn = X => Y => Y'
  * Y' = [y'0, y'1, y'2, ...]
- * @param X Vector de números de distancias.
- * @param Y Vector de números de imagen.
- * @returns Vector de números de diferencias divididas.
+ * @param {number[]}        X Vector de números de distancias.
+ * @param {number[]}        Y Vector de números de imagen.
+ *
+ * @returns number[][]
  */
 const notEquidistant =
     (X: number[]) =>
@@ -34,9 +43,10 @@ const notEquidistant =
             return res;
         };
 /**
- * Diferencias Avanzadas
- * @param fn Funcion para valores equidistante o no equidistante.
- * @param Y Vector de números.
+ * @function advancedDifferences - Diferencias Avanzadas
+ *
+ * @param {Function} fn Funcion para valores equidistante o no equidistante.
+ * @param {number[]} Y Vector de números que representan la imagen.
  */
 const advancedDifferences =
     (fn: any) =>
@@ -55,8 +65,15 @@ const advancedDifferences =
  *  [x2, y2],
  *  ...
  * ]
- * @param points Vector de pares ordenados de numeros.
- * Ejemplo: points (equidistante) = [
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]} points  Vector de pares ordenados de numeros.
+ *
+ * @returns number[][]
+ *
+ * @example
+ * // (equidistante)
+ * const points = [
  *  (15,0.965926),
  *  (25,0.906308),
  *  (35,0.819152),
@@ -64,42 +81,53 @@ const advancedDifferences =
  *  (55,0.573576),
  *  (65,0.422618),
  * ]
- * Resulta:
- * Tabla de Diferencias Avanzadas
- *  =[x]=====[y]==============================================
- *  15.0000 0.96593 -0.05962 -0.02754 0.00265 0.00075 -0.00010
- *  25.0000 0.90631 -0.08716 -0.02489 0.00340 0.00066
- *  35.0000 0.81915 -0.11204 -0.02149 0.00406
- *  45.0000 0.70711 -0.13353 -0.01743
- *  55.0000 0.57358 -0.15096
- *  65.0000 0.42262
- * [index>] =[0]=====[1]======[2]=====[3]=====[4]=====[5]=====
- * Ejemplo: points (no equidistante) = [
- *  (0.00,1.00000),
- *  (0.40,1.63246),
- *  (0.75,1.86603),
- *  (1.50,2.22474),
- *  (2.00,2.41421),
- * ]
- * Resulta:
- * Tabla de Diferencias Avanzadas divididas:
- *  =[x]=====[y]=====================================
- *  0.00000 1.00000 1.58115 -1.21841 0.69769 -0.31997
- *  0.40000 1.63246 0.66734 -0.17188 0.05775
- *  0.75000 1.86603 0.47828 -0.07947
- *  1.50000 2.22474 0.37894
- *  2.00000 2.41421
- * [index>] =[0]=====[1]=====[2]=====[3]=====[4]=====
+ * const tDiffAvanzadas = tabular(points)
+ *
+ * // Resultados tabulados:
+ * // Tabla de Diferencias Avanzadas
+ * //  =[x]=====[y]==============================================
+ * //  15.0000 0.96593 -0.05962 -0.02754 0.00265 0.00075 -0.00010
+ * //  25.0000 0.90631 -0.08716 -0.02489 0.00340 0.00066
+ * //  35.0000 0.81915 -0.11204 -0.02149 0.00406
+ * //  45.0000 0.70711 -0.13353 -0.01743
+ * //  55.0000 0.57358 -0.15096
+ * //  65.0000 0.42262
+ * // [index>] =[0]=====[1]======[2]=====[3]=====[4]=====[5]=====
+ * // Ejemplo: points (no equidistante) = [
+ * //  (0.00,1.00000),
+ * //  (0.40,1.63246),
+ * //  (0.75,1.86603),
+ * //  (1.50,2.22474),
+ * //  (2.00,2.41421),
+ * // ]
+ * // Resulta:
+ * // Tabla de Diferencias Avanzadas divididas:
+ * //  =[x]=====[y]=====================================
+ * //  0.00000 1.00000 1.58115 -1.21841 0.69769 -0.31997
+ * //  0.40000 1.63246 0.66734 -0.17188 0.05775
+ * //  0.75000 1.86603 0.47828 -0.07947
+ * //  1.50000 2.22474 0.37894
+ * //  2.00000 2.41421
+ * // [index>] =[0]=====[1]=====[2]=====[3]=====[4]=====
  */
-export const tabular = (points: number[][]) => {
+
+export const tabular = (points: T[]) => {
     points.sort();
-    const X = points.map(([x, y]: number[]) => x);
-    const Y = points.map(([x, y]: number[]) => y);
+    const X = points.map(([x, y]: T) => x);
+    const Y = points.map(([x, y]: T) => y);
     return isEquidistant(X) ?
         advancedDifferences(equidistant)(Y)
         : advancedDifferences(notEquidistant(X))(Y);
 };
-
+/**
+ * @interface InputInterpoReverse
+ *
+ * @property {number}           y : valor de la funcion aplicado al punto desconocido x de y = P(x).
+ * @property {number}           h : x-distancia de los puntos.
+ * @property {[number, number]} pointInit : punto inicial que contiene el mayor valor de absisa x
+ * menor al valor a interpolar, p(init) = (x0, y0).
+ * @property {number}           inc : primer incremento de y0, tabulado de los valores de la imagen.
+ */
 export interface InputInterpoReverse {
     y: number;
     h: number;
@@ -107,21 +135,26 @@ export interface InputInterpoReverse {
     inc: number;
 }
 /**
- * Método de Interpolación Inversa Lineal
+ * @function linearReverseInterpolation - Método de Interpolación Inversa Lineal
  * y = P(x) => x = x0 + ((y - y0) * h) / Δy0, con x desconocido.
- * Object<{
- *      @param y : valor de la funcion aplicado al punto desconocido x de y = P(x).
- *      @param h : x-distancia de los puntos.
- *      @param pointInit : punto inicial que contiene
- *              el mayor valor de absisa x menor al valor
- *              a interpolar, p(init) = (x0, y0).
- *      @param inc : primer incremento de y0, tabulado de los valores de la imagen.
- * }>
+ *
+ * @param {InputInterpoReverse} o
  */
 export const linearReverseInterpolation = ({ y, h, pointInit, inc }: InputInterpoReverse) =>
     pointInit[0] + (y + pointInit[1]) * h / inc;
 
-
+/**
+ * @interface InputInterpoQuadratic
+ *
+ * @property {number} y         valor de la funcion aplicado al punto desconocido x de y = P(x).
+ * @property {number} h         x-distancia de los puntos.
+ * @property {T}      pointInit punto inicial que contiene el mayor valor de absisa x menor
+ * al valor a interpolar, p(init) = (x0, y0).
+ * @property {number} x1        siguiente punto respecto x0 del punto inicial.
+ * @property {number} inc1      primer incremento de y0, tabulado de los valores de la imagen.
+ * @property {number} inc2      segundo incremento de y0, tabulado de los valores de la imagen.
+ *
+ */
 export interface InputInterpoQuadratic {
     y: number;
     y0: number;
@@ -132,22 +165,24 @@ export interface InputInterpoQuadratic {
     inc2: number; // of y0
 }
 /**
- * Método de Interpolación Inversa Cuadratica
+ * @function quadraticInverseInterpolation - Método de Interpolación Inversa Cuadratica
  * y = P(x) =>
  *      a = (Δ²)y0 / 2h²
  *      b = (Δy0 / h) - a * (x0 + x1)
  *      c = y0 + (a * x1 - (Δy0 / h)) * x0 - y
  * [r1, r2] = resolvente_cuadratica(a, b, c)
  * Donde: x = r1 si r1 ∈ (x0; x1) o x = r2 si r2 ∈ (x0; x1)
- * Dbject<{
- *      @param y : valor de la funcion aplicado al punto desconocido x de y = P(x).
- *      @param h : x-distancia de los puntos.
- *      @param pointInit : punto inicial que contiene
- *              el mayor valor de absisa x menor al valor
- *              a interpolar, p(init) = (x0, y0).
- *      @param x1 : siguiente punto respecto x0 del punto inicial.
- *      @param inc1 : primer incremento de y0, tabulado de los valores de la imagen.
- *      @param inc2 : segundo incremento de y0, tabulado de los valores de la imagen.
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {InputInterpoQuadratic} o
+ *
+ * @returns Object<{{
+ *       a: number,
+ *       b: number,
+ *       c: number,
+ *       resolvent: [number, number],
+ *       x: number,
  * }>
  */
 export const quadraticInverseInterpolation = ({ y, h, pointInit, x1, inc1, inc2 }: InputInterpoQuadratic) => {
@@ -165,20 +200,24 @@ export const quadraticInverseInterpolation = ({ y, h, pointInit, x1, inc1, inc2 
         x: x0 < rs[0] && rs[0] < x1 ? rs[0] : rs[1],
     };
 };
-
+/**
+ * @interface InputMu
+ *
+ * @property {number[][]}   points  Vector de puntos.
+ * @property {number}       x       Número a interpolar.
+ * @property {boolean}      asc     Boolean que indica que la tabla es ascendente.
+ */
 export interface InputMu {
     points: number[][];
     x: number;
     asc: boolean;
 }
 /**
- * Mu
+ * @function mu - Mu
  * μ = (x - x0) / h
- * Object<{
- *      @param points vector de puntos.
- *      @param x número a interpolar.
- *      @param asc boolean que indica que la tabla es ascendente.
- * }>
+ *
+ * @param {InputMu} o
+ *
  * @returns Object<{ index: number, u: number }>.
  */
 const mu = ({ points, x, asc }: InputMu): { index: number, u: number } => {
@@ -201,15 +240,18 @@ const mu = ({ points, x, asc }: InputMu): { index: number, u: number } => {
     };
 };
 /**
- * Formula de Newton Gregory Ascendente
- * P(n)(x) = y0 + ((x-x0)/h) * Δy0 + ((x-x1)(x-x0)/2h²) * Δ²y0 +...+ ((x-x(n-1))...(x-x1)(x-x0)/n!h^n) * Δ^ny0
- * [Curry] fn = points => tab => x => y'
- * @param points
- * @param tab
- * @param x
+ * @function newtonGregoryAscending - Formula de Newton Gregory Ascendente
+ * [Curryficada]
+ *  P(n)(x) = y0 + ((x-x0)/h) * Δy0 + ((x-x1)(x-x0)/2h²) * Δ²y0 +...+ ((x-x(n-1))...(x-x1)(x-x0)/n!h^n) * Δ^ny0
+ *
+ * @param {number} points    .
+ * @param {number} tab       .
+ * @param {number} x         .
+ *
+ * @returns number
  */
 export const newtonGregoryAscending =
-    (points: number[][]) =>
+    (points: T[]) =>
         (tab: number[][]) =>
             (x: number) => {
                 const prods = (muConst: number, top: number) =>
@@ -232,15 +274,23 @@ export const newtonGregoryAscending =
                 return res;
             };
 /**
- * Formula de Newton Gregory Ascendente
- * P(n)(x) = y0 + ((x-x0)/h) * Δy0 + ((x-x1)(x-x0)/2h²) * Δ²y0 +...+ ((x-x(n-1))...(x-x1)(x-x0)/n!h^n) * Δ^ny0
- * [Curry] fn = points => tab => x => y'
- * @param points
- * @param tab
- * @param x
+ * @function newtonGregoryDescending - Formula de Newton Gregory Ascendente
+ * [Curryficada] fn = points => tab => x => y'
+ *  P(n)(x) = y0 + ((x-x0)/h) * Δy0 + ((x-x1)(x-x0)/2h²) * Δ²y0 +...+ ((x-x(n-1))...(x-x1)(x-x0)/n!h^n) * Δ^ny0
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]}         points  Conjunto de pares ordenados
+ * @param {number[][]}  tab     Tabla de diferencias.
+ * @param {number}      x       valor de absisa a interpolar.
+ *
+ * @returns number
+ *
+ * @example
+ *
  */
 export const newtonGregoryDescending =
-    (points: number[][]) =>
+    (points: T[]) =>
         (tab: number[][]) =>
             (x: number) => {
                 const prods = (muConst: number, top: number) =>
@@ -263,13 +313,18 @@ export const newtonGregoryDescending =
                 return res;
             };
 /**
- * Lagrange
+ * @function lagrange - Lagrange
  *  Método para interpolar valores no x-distantes.
- * @param points
- * @param x
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]}     points
+ * @param {number}  x
+ *
+ * @returns number
  */
 export const lagrange =
-    (points: number[][]) =>
+    (points: T[]) =>
         (x: number) => {
             const prods = (ps: number[][], factorIni: number, len: number) => {
                 let pro = factorIni;
@@ -291,11 +346,21 @@ export const lagrange =
             return s * production(subPoints);
         };
 
+/**
+ * @function progressiveParabolicInterpolation - Interpolación Parabolica Progresiva.
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {T[]}         points  Conjunto de pares ordenados
+ * @param {number[][]}  tab     Tabla de diferencias.
+ * @param {number}      x       valor de absisa a interpolar.
+ *
+ * @returns Iterator<number>
+ */
 export const progressiveParabolicInterpolation =
-    (points: number[][]) =>
+    (points: T[]) =>
         (tab: number[][]) =>
             function*(x: number) {
-
                 const prods = (indexInit: number, top: number) =>
                     top < 1 ?
                         1
@@ -313,4 +378,3 @@ export const progressiveParabolicInterpolation =
                     yield s;
                 }
             };
-

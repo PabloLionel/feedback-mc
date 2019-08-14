@@ -3,15 +3,29 @@ import { conf } from './index';
 import { bolzano } from './utils';
 
 /**
- * Aceleracion de Aitken
- * @param {*} x1
+ * @function aitken - Aceleracion de Aitken
+ * [curryficado]
+ *
+ * @param {number} x1
+ * @param {number} x2
+ * @param {number} x3
+ *
+ * @returns number
  */
 const aitken = (x1: number) => (x2: number) => (x3: number) =>
     x3 - Math.pow(x3 - x2, 2) / (x3 - 2 * x2 + x1);
 
 /**
- * Metodo de Iteracion
- * @param {*} x1
+ * @function iteration - Metodo de Iteracion
+ * [curryficado]
+ *
+ * @param {Function} g  Despeje de f1 ó f2 que satisface |g(x0)|<1
+ * @param {number} x0   x sub cero.
+ * @param {Boolean} ak  De ser verdadero se aplica AITKEN.
+ *
+ * @returns number
+ *
+ * @example --
  */
 export const iteration =
     (g: any) =>
@@ -41,10 +55,16 @@ export const iteration =
         }
     };
 
-
 /**
- * Modelo matematico del Segundo Ornde de Newton-Rapson
- * @param {*} x1
+ * @function secondOrderOfNR - Modelo matematico del Segundo Ornde de Newton-Rapson
+ * [curryficado]
+ *
+ * @param {Function} f      funcion a resolver.
+ * @param {Function} df1    Derivada 1ra de la funcion.
+ * @param {Function} df2    Derivada 2da de la funcion.
+ * @param {number} xn       Punto de absisa.
+ *
+ * @returns number
  */
 const secondOrderOfNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
     xn - ( f(xn)
@@ -53,19 +73,25 @@ const secondOrderOfNR = (f: any) => (df1: any) => (df2: any) => (xn: number) =>
         )
     );
 /**
- * Método de Segundo Orden de Newton Raphson
- * @param f : funcion a resolver.
- * @param df1: derivada 1ra de la funcion.
- * @param df2: derivada 2da de la funcion.
- * @param a : extremo de separación inferior.
- * @param b : extremo de separación superior.
- * @param e : cota de error.
+ * @function secondOrderOfNewtonRaphson - Método de Segundo Orden de Newton Raphson
+ * [curryficado]
+ *
+ * @param {Function} f      funcion a resolver.
+ * @param {Function} df1    Derivada 1ra de la funcion.
+ * @param {Function} df2    Derivada 2da de la funcion.
+ * @param {number} a        Extremo de separación inferior.
+ * @param {number} b        Extremo de separación superior.
+ * @param {number} err      Cota de error.
+ *
+ * @returns Iterator<number>
+ *
+ * @example --
  */
 export const secondOrderOfNewtonRaphson =
-    (f: any) => // funcion a hallar su raiz
-    (df1: any) => // derivada primera de la funcion
-    (df2: any) => // derivada segunda de la funcion
-    (a: number) => (b: number) => // extremos de separacion
+    (f: any) =>
+    (df1: any) =>
+    (df2: any) =>
+    (a: number) => (b: number) =>
     function*(err = epsilon()) {
         const hayRaiz = bolzano(f);
         let x0;
@@ -86,7 +112,11 @@ export const secondOrderOfNewtonRaphson =
             a = x0; // reutilizacion de la variable a como variable auxiliar
             x0 = sonr(x0);
             yield x0;
-        }while (!(Ea(x0)(a) < err));
+        } while (!(Ea(x0)(a) < err));
     };
-
-// export const sturm
+/**
+ * @function sturm
+ */
+export const sturm = () => {
+    throw new Error('Method not implemented');
+};

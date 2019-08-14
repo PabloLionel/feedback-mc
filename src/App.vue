@@ -16,18 +16,23 @@
     </v-toolbar>
 
     <v-content>
-      <HelloWorld/>
+      <!-- <HelloWorld/> -->
+      <Scores/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import { VList, VListTileTitle, VListTileContent } from 'vuetify/lib';
+import Scores from './components/scores/Scores';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
+    Scores,
+    VList,
+    VListTileTitle,
+    VListTileContent,
   },
   data() {
     return {

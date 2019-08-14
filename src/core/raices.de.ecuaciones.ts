@@ -1,19 +1,36 @@
-import { Ea, epsilon } from './errores';
-import { bolzano } from './utils';
+import {
+    Ea,
+    epsilon,
+} from './errores';
+import {
+    bolzano,
+    T,
+} from './utils';
 
 /**
- * Metodo de tanteos
- * @param {*} x1
+ * @function scores - Metodo de tanteos
+ * [curryficado]
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {Function}    f   Función a analizar.
+ * @param {number}      A   Cota inferior a tantear.
+ * @param {number}      B   Cota superior a tantear.
+ * @param {number}      inc Incremento.
+ *
+ * @returns Iterator<T>
+ *
+ * @example --
  */
 export const scores =
     (f: any) =>
     (A: number) =>
     (B: number) =>
-    function*(inc: number) {
+    function*(inc: number = 1) {
         const raizEn = bolzano(f);
         do {
             if (raizEn(A)(A + inc)) {
-                yield [A, A + inc].sort((x, y) => x - y);
+                yield [A, A + inc].sort((x, y) => x - y) as T;
                 A += inc;
             }
             A += inc;
@@ -21,27 +38,47 @@ export const scores =
     };
 
 /**
- * Tolerancia
- * @param {*} x1
+ * @function tol - Tolerancia
+ * [curryficado]
+ *
+ * @param {number} er   Error.
+ * @param {number} a    Extremo a.
+ * @param {number} b    Extremo b.
+ *
+ * @returns number
  */
 const tol = (er: number) => (a: number) => (b: number) =>
     // tslint:disable-next-line:no-bitwise
     ~~(Math.log2((b - a) / er));
 /**
- * Intervalo Medio
- * @param {*} x1
+ * @function medium - Intervalo Medio
+ * [curryficado]
+ *
+ * @param {number} a    Extremo a.
+ * @param {number} b    Extremo b.
+ *
+ * @returns number
  */
 const medium = (a: number) => (b: number) =>
     (a + b) / 2;
 /**
- * Metodo de Intervalo Medio
- * @param {*} x1
+ * @function mediumInterval - Metodo de Intervalo Medio
+ * [curryficado]
+ *
+ * @param {Function}    fn  Función a converger.
+ * @param {number}      a   Extremo inferior de separación.
+ * @param {number}      b   Extremo superior de separación.
+ * @param {number}      err Cota superior de error.
+ *
+ * @returns Iterator<number>
+ *
+ * @example --
  */
 export const mediumInterval =
     (fn: any) =>
     (a: number) =>
     (b: number) =>
-    function*(err = epsilon()) {
+    function*(err = epsilon()): Iterator<number> {
         let t = tol(err)(a)(b);
         const bl = bolzano(fn);
         let p;
@@ -57,58 +94,89 @@ export const mediumInterval =
     };
 
 /**
- * Formula de Interpolacion Lineal
- * @param {*} x1
+ * @function interpolation - Formula de Interpolacion Lineal
+ * [curryficado]
+ *
+ * @param {number} x1
+ * @param {number} y1
+ * @param {number} x2
+ * @param {number} y2
+ *
+ * @returns number
  */
 const interpolation = (x1: number) => (y1: number) => (x2: number) => (y2: number) =>
     (x1 * y2 - x2 * y1) / (y2 - y1);
 /**
- * Metodo de Interpolación Lineal
- * @param {*} x1
+ * @function linearInterpolation - Metodo de Interpolación Lineal
+ * [curryficado]
+ *
+ * @param {Function}    fn
+ * @param {number}      x1
+ * @param {number}      x2
+ * @param {number}      err
+ *
+ * @returns Iterator<number>
+ *
+ * @example --
  */
 export const linearInterpolation =
-    (f: any) =>
+    (fn: any) =>
     (x1: number) =>
     (x2: number) =>
     function*(err = epsilon()) {
-        const il = interpolation(x1)(f(x1));
+        const il = interpolation(x1)(fn(x1));
         let x;
         do {
             x = x2;
-            x2 = il(x2)(f(x2));
+            x2 = il(x2)(fn(x2));
             yield x2;
         }while (Ea(x2)(x) < err);
     };
 
 /**
- * Modelo matematico de Newton-Rapson
- * @param {*} x1
+ * @function newtonraphson - Modelo matematico de Newton-Rapson
+ * [curryficado]
+ *
+ * @param {Function}    f   Función.
+ * @param {Function}    df  Derivada primera de f.
+ * @param {number}      xn  Punto de absisa.
+ *
+ * @returns number
  */
 const newtonraphson = (f: any) => (df: any) => (xn: number) =>
     xn - (f(xn) / df(xn));
 /**
- * Metodo de newton-rapson
- * @param {*} x1
+ * @function newtonRaphson - Metodo de newton-rapson
+ *
+ * @param {Function}    f       Función a analizar.
+ * @param {Function}    df1     Derivada primera de f.
+ * @param {Function}    df2     Derivada segunda de f.
+ * @param {number}      a       Extremo inferior de separación.
+ * @param {number}      b       Extremo superior de separación.
+ * @param {number}      err     Cota superior de Error.
+ *
+ * @returns Iterator<number>
+ *
+ * @example --
  */
 export const newtonRaphson =
-    (f: any) => // funcion a hallar su raiz
-    (df1: any) => // derivada primera de la funcion
-    (df2: any) => // derivada segunda de la funcion
-    (a: number) => (b: number) =>  // extremos de separacion
+    (f: any) =>
+    (df1: any) =>
+    (df2: any) =>
+    (a: number) => (b: number) =>
     function*(err = epsilon()) {
         const hayRaiz = bolzano(f);
-        let x0;
-        if (!hayRaiz(a)(b)) {
-            throw Error('Se carece de una raiz en los extremos de separacion.');
-        }
 
+        if (!hayRaiz(a)(b)) { throw Error('It lacks a root at the ends of separation.'); }
+
+        if (!df2) { throw Error('The second derivative is "undefined".'); }
+
+        let x0;
         if (f(a) * df2(a) > 0) {
             x0 = a;
         } else if (f(b) * df2(b) > 0) {
             x0 = b;
-        } else {
-            throw Error('El procedimiento es divergente en ambos extremos de separacion.');
-        }
+        } else { throw Error('The procedure is divergent at both ends of separation.'); }
 
         const nr = newtonraphson(f)(df1);
         do {

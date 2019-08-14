@@ -1,20 +1,33 @@
 import { Ea } from './errores';
-import { fnDiferencial } from './utils';
+import {
+    fnDifferential,
+    T,
+} from './utils';
 /**
  * Modulo de métodos de Integración de Ecuaciones Diferenciales (IED)
  * Métodos que comienzan por si mismos.
  */
-
+/**
+ * @interface InputEuler
+ *
+ * @property {fnDifferential}   dy
+ * @property {[number, number]} pointInit
+ * @property {number}           h
+ */
 interface InputEuler {
-    dy: fnDiferencial;
-    pointInit: [number, number];
+    dy: fnDifferential;
+    pointInit: T;
     h: number;
 }
 /**
- * Integración de Euler
- * @returns serie de avances de integracion [iterable].
+ * @function euler - Integración de Euler
+ *  Serie de avances de integracion.
+ *
+ * @param {InputEuler} o
+ *
+ * @returns Iterator<{ advance: T, dif: number }>
  */
-export function* euler({dy, pointInit, h}: InputEuler): Iterable<{ advance: [number, number], dif: number }> {
+export function* euler({dy, pointInit, h}: InputEuler): Iterable<{ advance: T, dif: number }> {
     let [x, y] = pointInit;
     while (1) {
         const dif = dy(x, y);
@@ -26,19 +39,47 @@ export function* euler({dy, pointInit, h}: InputEuler): Iterable<{ advance: [num
         y += dif * h;
     }
 }
+/**
+ * @interface InputModifiedEuler
+ *
+ * @property {fnDifferential}   dy
+ * @property {[number, number]} pointInit
+ * @property {number}           h
+ * @property {number}           E
+ */
 interface InputModifiedEuler {
-    dy: fnDiferencial;
-    pointInit: [number, number];
+    dy: fnDifferential;
+    pointInit: T;
     h: number;
-    E: number; // error
+    E: number;
 }
 /**
- * Integración de Euler
- * @returns serie de avances de integracion [iterable].
+ * @function modifiedEuler - Integración de Euler Modificado
+ *
+ * @typedef {[number, number]} T
+ *
+ * @returns Iterable<{ advance: T, dif: number, P: number, Cs: number[]}>
  */
 export function* modifiedEuler({dy, pointInit, h, E}: InputModifiedEuler)
-    : Iterable<{ advance: [number, number], dif: number, P: number, Cs: number[] }>  {
+    : Iterable<{ advance: T, dif: number, P: number, Cs: number[] }>  {
+    /**
+     * @function predictor - Predictor de Euler Modificado
+     *
+     * @param {number} y0
+     * @param {number} dif0
+     *
+     * @returns {number}
+     */
     const predictor = (y0: number, dif0: number): number => y0 + dif0 * h;
+    /**
+     * @function corrector - Corrector de Euler Modificado
+     *
+     * @param {number} y0
+     * @param {number} yp0
+     * @param {number} Pyp1
+     *
+     * @returns number
+     */
     const corrector = (y0: number, yp0: number, Pyp1: number): number => y0 + ((yp0 + Pyp1) / 2) * h;
     let [x, y] = pointInit;
     let P = y;
@@ -65,13 +106,29 @@ export function* modifiedEuler({dy, pointInit, h, E}: InputModifiedEuler)
         y += Cs[Cs.length - 1];
     }
 }
+/**
+ * @interface InputRungeKutta
+ *
+ * @property {fnDifferential}   dy
+ * @property {[number, number]} pointInit
+ * @property {number}           h
+ */
 interface InputRungeKutta {
-    dy: fnDiferencial;
-    pointInit: [number, number];
+    dy: fnDifferential;
+    pointInit: T;
     h: number;
 }
+/**
+ * @function rungeKutta2ndOrder - Runge Kutta de Segundo Order
+ *
+ * @typedef {[number, number]} T
+ *
+ * @param {InputRungeKutta} o
+ *
+ * @returns Iterator<{ advance: T, dif: number }>
+ */
 export function* rungeKutta2ndOrder({dy, pointInit, h}: InputRungeKutta)
-    : Iterable<{ advance: [number, number], dif: number }> {
+    : Iterable<{ advance: T, dif: number }> {
     let [x, y] = pointInit;
     while (1) {
         const dif = dy(x, y);
@@ -85,9 +142,15 @@ export function* rungeKutta2ndOrder({dy, pointInit, h}: InputRungeKutta)
         x += h;
     }
 }
-
+/**
+ * @function rungeKutta4thOrder - Runge Kutta de Cuarto Order
+ *
+ * @param {InputRungeKutta} o
+ *
+ * @returns Iterator<{ advance: T, dif: number }>
+ */
 export function* rungeKutta4thOrder({dy, pointInit, h}: InputRungeKutta)
-: Iterable<{ advance: [number, number], dif: number }>  {
+: Iterable<{ advance: T, dif: number }>  {
     let [x, y] = pointInit;
     while (1) {
         const dif: number = dy(x, y);
