@@ -16,20 +16,19 @@
     </v-toolbar>
 
     <v-content>
-      <!-- <HelloWorld/> -->
-      <Scores/>
+      <RaicesDeEcuaciones/>
     </v-content>
   </v-app>
 </template>
 
 <script>
 import { VList, VListTileTitle, VListTileContent } from 'vuetify/lib';
-import Scores from './components/raices.de.ecuaciones/RaicesDeEcuaciones';
+import RaicesDeEcuaciones from './components/raices.de.ecuaciones/RaicesDeEcuaciones';
 
 export default {
   name: 'App',
   components: {
-    Scores,
+    RaicesDeEcuaciones,
     VList,
     VListTileTitle,
     VListTileContent,
