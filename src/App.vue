@@ -24,7 +24,7 @@
 
 <script>
 import { VList, VListTileTitle, VListTileContent } from 'vuetify/lib';
-import Scores from './components/scores/Scores';
+import Scores from './components/raices.de.ecuaciones/RaicesDeEcuaciones';
 
 export default {
   name: 'App',
